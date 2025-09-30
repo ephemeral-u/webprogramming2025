@@ -97,7 +97,7 @@
      <p></p>
      <img src="images/4.jpeg">
      <p></p>
-     6500 <button>В корзину</button>
+     6500 <button onclick="addToCart('Mitski - bury me at make out creek', 6500)">В корзину</button>
      </figure>
      <figure>
      <a>Fleetwood Mac</a>
@@ -106,7 +106,7 @@
      <p></p>
      <img src="images/5.jpg">
      <p></p>
-     6200 <button>В корзину</button>
+     6200 <button onclick="addToCart('Fleetwood Mac - Rumors', 6200)">В корзину</button>
      </figure>
      <figure>
      <a>Arctic Monkeys</a>
@@ -115,7 +115,7 @@
      <p></p>
      <img src="images/6.jpg">
      <p></p>
-     7000 <button>В корзину</button>
+     7000 <button onclick="addToCart('Arctic Monkeys - Favourite Worst Nightmares', 7000)">В корзину</button>
      </figure>
    </div>
    
@@ -123,6 +123,8 @@
       
     <div class="cart-window" id="cartWindow">
       <h2>Корзина</h2>
+      <div id="cartContent">
+      </div>
       <p>Товаров в корзине: 0</p>
       <button onclick="closeCart()">Закрыть</button>
     </div>
@@ -131,6 +133,7 @@
      function openCart() {
         document.getElementById('cartWindow').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
+        showCartItems();
       }
 
       function closeCart() {
@@ -151,6 +154,36 @@
         });
         localStorage.setItem('cart', JSON.stringify(cart));
         alert('Пластинка ' + productName + ' добавлена в корзину.')
+        }
+                  
+      function showCartItems() {
+        const cartContent = document.getElementById('cartContent'); 
+        
+        let cart = localStorage.getItem('cart');
+        
+        if (!cart || JSON.parse(cart).length === 0) {
+          cartContent.innerHTML = '<p>Корзина пуста</p>';
+          return;
+        }
+        
+        cart = JSON.parse(cart);
+        
+        let html = '<ul>';
+        cart.forEach(item => {
+          html += '<li>' + item.name + ' - ' + item.price + ' руб.</li>';
+          html += '<button onclick="deleteCartItem(\'' + item.name + '\')">Удалить</button></li>';
+        });
+        html += '</ul>';
+        
+        cartContent.innerHTML = html; // Отображаем товары в pop-up окне
+        }
+      function deleteCartItem(itemName) {
+         let cart = localStorage.getItem('cart');
+         if (!cart) return;
+         cart = JSON.parse(cart);
+         cart = cart.filter(item => item.name !== itemName)
+         localStorage.setItem('cart', JSON.stringify(cart));
+         showCartItems(); 
         }
                   
    </script>
