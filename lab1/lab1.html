@@ -138,9 +138,17 @@
       <input type="text" id="Name" placeholder="Фамилия"><br>
       <input type="text" id="Name" placeholder="Адрес"><br>
       <input type="text" id="Name" placeholder="Номер телефона"><br>
+      <button onclick="alertOrder()">Создать заказ</button>
     </div>
    
    <script>
+     function alertOrder() {
+       closeCart("orderWindow");
+       closeCart("cartWindow");
+       alert('Заказ создан!:)')
+       
+     }
+     
      function openCart(id) {
         document.getElementById(id).style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
