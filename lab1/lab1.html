@@ -148,10 +148,16 @@
         } else {
           cart = JSON.parse(cart);
         }
-        cart.push({
+        const i = cart.findIndex(item => item.name === productName);
+        if (i !== -1) {
+         cart[i].count += 1;          
+       } else {
+         cart.push({
           name: productName,
-          price: productPrice
-        });
+          price: productPrice,
+          count: 1
+        });         
+        }  
         localStorage.setItem('cart', JSON.stringify(cart));
         alert('Пластинка ' + productName + ' добавлена в корзину.')
         }
@@ -171,19 +177,33 @@
         let html = '<ul>';
         cart.forEach(item => {
           html += '<li>' + item.name + ' - ' + item.price + ' руб.</li>';
-          html += '<button onclick="deleteCartItem(\'' + item.name + '\')">Удалить</button></li>';
+           html += '<button onclick="reduceCartItem(\'' + item.name + '\')">-</button></li>';
+          html += item.count
+          html += '<button onclick="increaseCartItem(\'' + item.name + '\')">+</button></li>';
         });
         html += '</ul>';
         
-        cartContent.innerHTML = html; // Отображаем товары в pop-up окне
-        }
-      function deleteCartItem(itemName) {
+        cartContent.innerHTML = html; 
+      }
+     function reduceCartItem(itemName) {
          let cart = localStorage.getItem('cart');
-         if (!cart) return;
          cart = JSON.parse(cart);
-         cart = cart.filter(item => item.name !== itemName)
+       	 index = cart.findIndex(item => item.name === itemName);
+         if (cart[index].count === 1) {
+           cart = cart.filter(item => item.name !== itemName)
+         } else if (cart[index].count > 1){
+           cart[index].count -= 1;
+           }
+        localStorage.setItem('cart', JSON.stringify(cart));
+       	showCartItems();
+     	}
+     function increaseCartItem(itemName) {
+         let cart = localStorage.getItem('cart');
+         cart = JSON.parse(cart);
+       	 index = cart.findIndex(item => item.name === itemName);
+         cart[index].count += 1;
          localStorage.setItem('cart', JSON.stringify(cart));
-         showCartItems(); 
+       	 showCartItems();
         }
                   
    </script>
