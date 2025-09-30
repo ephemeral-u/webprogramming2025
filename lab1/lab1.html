@@ -125,7 +125,6 @@
       <h2>Корзина</h2>
       <div id="cartContent">
       </div>
-      <p>Товаров в корзине: 0</p>
       <button onclick="closeCart()">Закрыть</button>
     </div>
    
@@ -182,7 +181,7 @@
           html += '<button onclick="increaseCartItem(\'' + item.name + '\')">+</button></li>';
         });
         html += '</ul>';
-        
+        html += getCartTotal();
         cartContent.innerHTML = html; 
       }
      function reduceCartItem(itemName) {
@@ -205,6 +204,15 @@
          localStorage.setItem('cart', JSON.stringify(cart));
        	 showCartItems();
         }
+     function getCartTotal() {
+    	let cart = localStorage.getItem('cart');
+    	if (!cart) return 0;
+    	cart = JSON.parse(cart);
+    	const total = cart.reduce((sum, item) => {
+        return sum + (item.price * item.count);
+   	 	}, 0);
+    	return total;
+}
                   
    </script>
  </body>
