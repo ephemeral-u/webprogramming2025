@@ -70,7 +70,7 @@
      <p></p>
      <img src="images/1.jpg">
      <p></p>
-     5500 <button>В корзину</button>
+     5500 <button onclick="addToCart('The Neighbourhood - Wiped Out!', 5500)">В корзину</button>
      </figure> 
      <figure>
      <a>Radiohead</a>
@@ -79,7 +79,7 @@
      <p></p>
      <img src="images/2.jpg">
      <p></p>
-     6000 <button>В корзину</button>
+     6000 <button onclick="addToCart('Radiohead - In Rainbows', 6000)">В корзину</button>
      </figure>
      <figure>
      <a>Lana Del Ray</a>
@@ -88,7 +88,7 @@
      <p></p>
      <img src="images/3.jpg">
      <p></p>
-     7000 <button>В корзину</button>
+     7000 <button onclick="addToCart('Lana Del Rey - Ultraviolence', 7000)">В корзину</button>
      </figure>
      <figure>
      <a>Mitski</a>
@@ -137,6 +137,22 @@
         document.getElementById('cartWindow').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
       }
+     
+     function addToCart(productName, productPrice) {
+        let cart = localStorage.getItem('cart');
+        if (!cart) {
+          cart = [];
+        } else {
+          cart = JSON.parse(cart);
+        }
+        cart.push({
+          name: productName,
+          price: productPrice
+        });
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert('Пластинка ' + productName + ' добавлена в корзину.')
+        }
+                  
    </script>
  </body>
 </html> 
