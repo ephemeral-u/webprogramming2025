@@ -59,7 +59,7 @@
   </head>
  <body bgcolor="#E9967A">
    
-    <button onclick="openCart()">Корзина</button>
+    <button onclick="openCart('cartWindow')">Корзина</button>
    
    <h2>Магазин виниловых пластинок</h2>
    <div class="container">
@@ -122,21 +122,33 @@
    <div class="overlay" id="overlay"></div>
       
     <div class="cart-window" id="cartWindow">
+      <button onclick="closeCart('cartWindow')">X</button>
       <h2>Корзина</h2>
       <div id="cartContent">
       </div>
-      <button onclick="closeCart()">Закрыть</button>
+    </div>
+   
+   
+   <div class="overlay" id="overlay"></div>
+      
+    <div class="cart-window" id="orderWindow">
+      <button onclick="closeCart('orderWindow')">X</button>
+      <h2>Форма заказа</h2>
+      <input type="text" id="Name" placeholder="Имя"><br>
+      <input type="text" id="Name" placeholder="Фамилия"><br>
+      <input type="text" id="Name" placeholder="Адрес"><br>
+      <input type="text" id="Name" placeholder="Номер телефона"><br>
     </div>
    
    <script>
-     function openCart() {
-        document.getElementById('cartWindow').style.display = 'block';
+     function openCart(id) {
+        document.getElementById(id).style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
         showCartItems();
       }
 
-      function closeCart() {
-        document.getElementById('cartWindow').style.display = 'none';
+      function closeCart(id) {
+        document.getElementById(id).style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
       }
      
@@ -175,13 +187,15 @@
         
         let html = '<ul>';
         cart.forEach(item => {
-          html += '<li>' + item.name + ' - ' + item.price + ' руб.</li>';
-           html += '<button onclick="reduceCartItem(\'' + item.name + '\')">-</button></li>';
+          html += item.name + '<br>';
+          html += item.price + '<br>';
+          html += '<button onclick="reduceCartItem(\'' + item.name + '\')">-</button></li>';
           html += item.count
           html += '<button onclick="increaseCartItem(\'' + item.name + '\')">+</button></li>';
         });
         html += '</ul>';
-        html += getCartTotal();
+        html += 'Итоговая сумма:' + getCartTotal() + '<br>';
+        html += '<button onclick="openCart(\'orderWindow\')">Оформить заказ</button></li>';
         cartContent.innerHTML = html; 
       }
      function reduceCartItem(itemName) {
