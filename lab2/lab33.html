@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - Игра</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #FFCBDB;
+            color: #f1f1f1;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .title-container {
+            flex: 1;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: #EB5284;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+	    text-align: center;	
+        }
+
+        .scores-container {
+            display: flex;
+            gap: 20px;
+	    justify-content: center; 
+        }
+
+        .score-box {
+            background: #FB607F;
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .game-info {
+            margin-bottom: 30px;
+        }
+	.controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #FB607F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .game-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-board {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 15px;
+            aspect-ratio: 1/1;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .scores-container {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .score-box {
+                min-width: 45%;
+                padding: 12px 15px;
+            }
+            
+            .title {
+                font-size: 2.8rem;
+            }
+            
+            .controls {
+                justify-content: space-between;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 2.3rem;
+            }
+            
+            .score {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .game-board {
+                gap: 10px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="title-container">
+                <h1 class="title">2048</h1>
+            </div>
+           
+        </header>
+	<div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">Счет</div>
+                    <div id="score" class="score">0</div>
+                </div>
+            </div>
+        <div class="game-info">
+            <div class="controls">
+                <button id="new-game" class="btn">
+                    Новая игра
+                </button>
+                <button id="undo" class="btn">
+                     Отменить ход
+                </button>
+                <button id="leaderboard-btn" class="btn">
+                     Таблица лидеров
+                </button>
+            </div>
+            
+        <main class="game-container">
+            <div class="game-wrapper">
+                <div id="game-board" class="game-board"></div>
+            </div>
+        </main>
+
+    </div>
+</body>
+</html>
