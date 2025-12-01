@@ -315,17 +315,70 @@
         </div>
     </div>
 <script>
-const leaderboardModal = document.getElementById('leaderboard-modal');
-const leaderboardBody = document.getElementById('leaderboard-body');
-const leaderboardButton = document.getElementById('leaderboard-btn');
-const closeModalButton = document.getElementById('close-modal');
-leaderboardButton.addEventListener('click', () => {
-    leaderboardModal.classList.remove('hidden');
-});
+	const GRID_SIZE = 4;
+	const EMPTY_CELL = 0;
+	const leaderboardModal = document.getElementById('leaderboard-modal');
+	const leaderboardBody = document.getElementById('leaderboard-body');
+	const leaderboardButton = document.getElementById('leaderboard-btn');
+	const closeModalButton = document.getElementById('close-modal');
+	const gameBoard = document.getElementById('game-board');
 
-closeModalButton.addEventListener('click', () => {
-    leaderboardModal.classList.add('hidden');
-});
+	let grid = [];
+        let score = 0;
+        let gameOver = false;
+
+	leaderboardButton.addEventListener('click', () => {
+    		leaderboardModal.classList.remove('hidden');
+	});
+
+	closeModalButton.addEventListener('click', () => {
+    		leaderboardModal.classList.add('hidden');
+	});
+	function createEmptyGrid() {
+            gameBoard.innerHTML = '';
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    gameBoard.appendChild(cell);
+                }
+            }
+        }
+
+        function addRandomTile() {
+            const emptyCells = [];
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    if (grid[row][col] === EMPTY_CELL) {
+                        emptyCells.push({row, col});
+                    }
+                }
+            }
+            if (emptyCells.length > 0) {
+                const numTiles = Math.random() < 0.9 ? 1 : 2;
+                
+                for (let i = 0; i < Math.min(numTiles, emptyCells.length); i++) {
+                    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                    const {row, col} = emptyCells[randomIndex];
+                    grid[row][col] = Math.random() < 0.9 ? 2 : 4;
+                    emptyCells.splice(randomIndex, 1);
+                }
+                
+                return true;
+            }
+            
+            return false;
+        }
+	function initGame() {
+		grid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(EMPTY_CELL));
+	}
+	function updateGrid() {
+    		gameBoard.innerHTML = '';
+	}
 </script>
 </body>
 </html>
