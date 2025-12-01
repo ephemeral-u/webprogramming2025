@@ -337,7 +337,16 @@
 	const leaderboardButton = document.getElementById('leaderboard-btn');
 	const closeModalButton = document.getElementById('close-modal');
 	const gameBoard = document.getElementById('game-board');
-
+	const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('game-over');
+        const finalScoreElement = document.getElementById('final-score');
+        const playerNameInput = document.getElementById('player-name');
+        const saveScoreButton = document.getElementById('save-score');
+        const saveScoreContainer = document.getElementById('save-score-container');
+        const scoreSavedElement = document.getElementById('score-saved');
+        const restartGameButton = document.getElementById('restart-game');
+        const newGameButton = document.getElementById('new-game');
+        const undoButton = document.getElementById('undo');
 	let grid = [];
         let score = 0;
         let gameOver = false;
@@ -575,6 +584,50 @@
             }
             updateScore();
             checkGameState();
+        }
+	
+        function canMove() {
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    if (grid[row][col] === EMPTY_CELL) {
+                        return true;
+                    }
+                }
+            }
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE - 1; col++) {
+                    if (grid[row][col] === grid[row][col + 1]) {
+                        return true;
+                    }
+                }
+            }
+            for (let col = 0; col < GRID_SIZE; col++) {
+                for (let row = 0; row < GRID_SIZE - 1; row++) {
+                    if (grid[row][col] === grid[row + 1][col]) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        function checkGameState() {
+            if (!canMove()) {
+                gameOver = true;
+                showGameOver();
+            }
+        }
+        function showGameOver() {
+            finalScoreElement.innerHTML = `Ваш счет: <span>${score}</span>`;
+            saveScoreContainer.classList.remove('hidden');
+            scoreSavedElement.classList.add('hidden');
+            playerNameInput.value = '';
+            gameOverElement.classList.remove('hidden');
+            updateMobileControlsVisibility();
+        }
+        function hideGameOver() {
+            gameOverElement.classList.add('hidden');
+            updateMobileControlsVisibility();
         }
 </script>
 </body>
