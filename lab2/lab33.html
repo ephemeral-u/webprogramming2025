@@ -524,6 +524,43 @@
             
             return moved;
         }
+	function updateScore() {
+    		scoreElement.textContent = score;
+   		 saveGameState();
+	}
+	function saveGameState() {
+    		const gameState = {
+        		grid: grid,
+        		score: score,
+       	 		history: history.slice(-5) 
+    		};
+    		localStorage.setItem('2048-game-state', JSON.stringify(gameState));
+	}
+	function updateGrid() {
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => tile.remove());
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    const value = grid[row][col];
+                    
+                    if (value !== EMPTY_CELL) {
+                        const tile = document.createElement('div');
+                        tile.classList.add('tile', `tile-${value}`);
+                        tile.textContent = value;
+                        tile.dataset.row = row;
+                        tile.dataset.col = col;
+                        const cellSize = (gameBoard.clientWidth - 75) / GRID_SIZE;
+                        const x = col * (cellSize + 15) + 15;
+                        const y = row * (cellSize + 15) + 15;
+                        tile.style.left = `${x}px`;
+                        tile.style.top = `${y}px`;
+                        gameBoard.appendChild(tile);
+                    }
+                }
+            }
+            updateScore();
+            checkGameState();
+        }
 </script>
 </body>
 </html>
