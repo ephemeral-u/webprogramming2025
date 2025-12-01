@@ -379,6 +379,151 @@
 	function updateGrid() {
     		gameBoard.innerHTML = '';
 	}
+	function moveLeft() {
+            if (gameOver) return false;
+            
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                const rowValues = newGrid[row].filter(cell => cell !== EMPTY_CELL);
+                for (let i = 0; i < rowValues.length - 1; i++) {
+                    if (rowValues[i] === rowValues[i + 1]) {
+                        rowValues[i] *= 2;
+                        score += rowValues[i];
+                        rowValues.splice(i + 1, 1);
+                    }
+                }
+                while (rowValues.length < GRID_SIZE) {
+                    rowValues.push(EMPTY_CELL);
+                }
+                if (JSON.stringify(newGrid[row]) !== JSON.stringify(rowValues)) {
+                    moved = true;
+                }
+                
+                newGrid[row] = rowValues;
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+        function moveRight() {
+            if (gameOver) return false;
+            
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                const rowValues = newGrid[row].filter(cell => cell !== EMPTY_CELL);
+                for (let i = rowValues.length - 1; i > 0; i--) {
+                    if (rowValues[i] === rowValues[i - 1]) {
+                        rowValues[i] *= 2;
+                        score += rowValues[i];
+                        rowValues.splice(i - 1, 1);
+                        i--; 
+                    }
+                }
+                while (rowValues.length < GRID_SIZE) {
+                    rowValues.unshift(EMPTY_CELL);
+                }
+                if (JSON.stringify(newGrid[row]) !== JSON.stringify(rowValues)) {
+                    moved = true;
+                }
+                
+                newGrid[row] = rowValues;
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+        function moveUp() {
+            if (gameOver) return false;
+            
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            for (let col = 0; col < GRID_SIZE; col++) {
+                const colValues = [];
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    colValues.push(newGrid[row][col]);
+                }
+                const filteredValues = colValues.filter(cell => cell !== EMPTY_CELL);
+                for (let i = 0; i < filteredValues.length - 1; i++) {
+                    if (filteredValues[i] === filteredValues[i + 1]) {
+                        filteredValues[i] *= 2;
+                        score += filteredValues[i];
+                        filteredValues.splice(i + 1, 1);
+                    }
+                }
+                while (filteredValues.length < GRID_SIZE) {
+                    filteredValues.push(EMPTY_CELL);
+                }
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    if (newGrid[row][col] !== filteredValues[row]) {
+                        moved = true;
+                    }
+                    newGrid[row][col] = filteredValues[row];
+                }
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+        function moveDown() {
+            if (gameOver) return false;
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            for (let col = 0; col < GRID_SIZE; col++) {
+                const colValues = [];
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    colValues.push(newGrid[row][col]);
+                }
+                const filteredValues = colValues.filter(cell => cell !== EMPTY_CELL);
+                for (let i = filteredValues.length - 1; i > 0; i--) {
+                    if (filteredValues[i] === filteredValues[i - 1]) {
+                        filteredValues[i] *= 2;
+                        score += filteredValues[i];
+                        filteredValues.splice(i - 1, 1);
+                        i--; 
+                    }
+                }
+                while (filteredValues.length < GRID_SIZE) {
+                    filteredValues.unshift(EMPTY_CELL);
+                }
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    if (newGrid[row][col] !== filteredValues[row]) {
+                        moved = true;
+                    }
+                    newGrid[row][col] = filteredValues[row];
+                }
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
 </script>
 </body>
 </html>
