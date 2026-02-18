@@ -184,12 +184,14 @@ class TaskManager {
     getFilteredTasks(filter, searchQuery = '') {
         let filtered = [...this.tasks];
         
+        // Фильтр по статусу
         if (filter === 'active') {
             filtered = filtered.filter(task => !task.completed);
         } else if (filter === 'completed') {
             filtered = filtered.filter(task => task.completed);
         }
         
+        // Фильтр по поиску
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(task => 
@@ -233,6 +235,7 @@ class TodoUI {
         this.input = document.getElementById('todo-input');
         this.dateInput = document.getElementById('todo-date');
         this.sortSelect = document.getElementById('sort-select');
+        this.initDragAndDrop();
         
         this.addEventListeners();
         this.render();
@@ -369,5 +372,76 @@ class TodoUI {
         tasks.forEach(task => {
             this.tasksList.appendChild(this.createTaskElement(task));
         });
+
+        this.initDragAndDrop();
+    }
+
+    initDragAndDrop() {
+        let draggedItem = null;
+        
+        this.tasksList.querySelectorAll('.todo-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = item;
+                item.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', item.dataset.id);
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            
+            item.addEventListener('dragend', (e) => {
+                item.classList.remove('dragging');
+                draggedItem = null;
+            });
+        });
+        
+        this.tasksList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            const afterElement = this.getDragAfterElement(e.clientY);
+            const currentItem = e.target.closest('.todo-item');
+            
+            if (draggedItem && currentItem && draggedItem !== currentItem) {
+                if (afterElement) {
+                    this.tasksList.insertBefore(draggedItem, afterElement);
+                } else {
+                    this.tasksList.appendChild(draggedItem);
+                }
+            }
+        });
+        
+        this.tasksList.addEventListener('drop', (e) => {
+            e.preventDefault();
+            
+            this.saveNewOrder();
+        });
+    }
+
+    getDragAfterElement(y) {
+        const draggableElements = [...this.tasksList.querySelectorAll('.todo-item:not(.dragging)')];
+        
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    saveNewOrder() {
+        // Получаем текущий порядок элементов в DOM
+        const items = [...this.tasksList.querySelectorAll('.todo-item')];
+        
+        // Создаем новый массив задач в порядке DOM
+        const newOrder = items.map(item => {
+            const taskId = parseInt(item.dataset.id);
+            return this.taskManager.tasks.find(t => t.id === taskId);
+        }).filter(task => task !== undefined);
+        
+        // Сохраняем новый порядок
+        this.taskManager.reorderTasks(newOrder);
     }
 }

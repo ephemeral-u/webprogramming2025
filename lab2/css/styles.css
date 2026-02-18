@@ -168,6 +168,20 @@ header h1 {
     flex-wrap: wrap;
 }
 
+.todo-item {
+    cursor: move; 
+}
+
+.todo-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #667eea;
+    background: #e2e8f0;
+}
+
+.todo-item.drag-over {
+    border-top: 2px solid #667eea;
+}
+
 .sort-select {
     padding: 8px;
     border: 2px solid #e0e0e0;
