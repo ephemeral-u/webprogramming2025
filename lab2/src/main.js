@@ -217,56 +217,6 @@ class TodoUI {
             }
         });
     }
-
-    createTaskElement(task) {
-        const li = document.createElement('li');
-        li.className = 'todo-item';
-        li.dataset.id = task.id;
-        
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'todo-checkbox';
-        checkbox.checked = task.completed;
-        
-        checkbox.addEventListener('change', () => {
-            this.taskManager.toggleTask(task.id);
-            this.render();
-        });
-        
-        const content = document.createElement('div');
-        content.className = 'todo-content';
-        
-        const title = document.createElement('span');
-        title.className = `todo-title ${task.completed ? 'completed' : ''}`;
-        title.textContent = task.title;
-        
-        const date = document.createElement('span');
-        date.className = 'todo-date';
-        date.textContent = new Date(task.date).toLocaleDateString('ru-RU');
-        
-        content.append(title, date);
-        
-        const actions = document.createElement('div');
-        actions.className = 'todo-actions';
-        
-        const editBtn = document.createElement('button');
-        editBtn.className = 'edit-btn';
-        editBtn.textContent = '✎';
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = '×';
-        
-        deleteBtn.addEventListener('click', () => {
-            this.taskManager.deleteTask(task.id);
-            this.render();
-        });
-        
-        actions.append(editBtn, deleteBtn);
-        li.append(checkbox, content, actions);
-        
-        return li;
-    }
     
     createTaskElement(task) {
         const li = document.createElement('li');
@@ -307,11 +257,40 @@ class TodoUI {
         deleteBtn.className = 'delete-btn';
         deleteBtn.textContent = '×';
         
-        actions.append(editBtn, deleteBtn);
+        editBtn.addEventListener('click', () => {
+            this.editTask(task);
+        });
         
+        deleteBtn.addEventListener('click', () => {
+            this.taskManager.deleteTask(task.id);
+            this.render();
+        });
+        
+        actions.append(editBtn, deleteBtn);
         li.append(checkbox, content, actions);
         
         return li;
+    }
+    
+    editTask(task) {
+        const newTitle = prompt('Редактировать задачу:', task.title);
+        
+        if (newTitle !== null) {
+            if (newTitle.trim()) {
+                const updates = { title: newTitle.trim() };
+                
+                const newDate = prompt('Изменить дату (ГГГГ-ММ-ДД):', task.date);
+                
+                if (newDate && /^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+                    updates.date = newDate;
+                }
+                
+                this.taskManager.updateTask(task.id, updates);
+                this.render();
+            } else {
+                alert('Название задачи не может быть пустым');
+            }
+        }
     }
     
     render() {
