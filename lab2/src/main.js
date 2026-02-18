@@ -1,14 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
+    createAppStructure();
 });
 
-function initApp() {
-    // Создаем основной контейнер
+function createAppStructure() {
+    // Создаем корневой элемент main
     const main = document.createElement('main');
+    
+    // Создаем контейнер
     const container = document.createElement('div');
     container.className = 'container';
     
-    // Применяем стили через JavaScript
+    // Применяем стили
     container.style.maxWidth = '800px';
     container.style.margin = '0 auto';
     container.style.padding = '20px';
@@ -16,7 +18,7 @@ function initApp() {
     container.style.borderRadius = '12px';
     container.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
     
-    // Семантический header с заголовком
+    // === HEADER ===
     const header = document.createElement('header');
     header.style.textAlign = 'center';
     header.style.marginBottom = '24px';
@@ -26,9 +28,11 @@ function initApp() {
     h1.style.color = '#333';
     h1.style.fontSize = '2rem';
     h1.style.margin = '0';
+    
+    // appendChild для header
     header.appendChild(h1);
     
-    // Форма для добавления задач
+    // === FORM ===
     const form = document.createElement('form');
     form.id = 'todo-form';
     form.className = 'todo-form';
@@ -42,7 +46,6 @@ function initApp() {
     input.id = 'todo-input';
     input.placeholder = 'Новая задача...';
     input.required = true;
-    // Стили через JavaScript
     input.style.flex = '2';
     input.style.minWidth = '200px';
     input.style.padding = '12px';
@@ -71,9 +74,10 @@ function initApp() {
     addButton.style.fontSize = '16px';
     addButton.style.cursor = 'pointer';
     
+    // append для form (можно добавлять несколько)
     form.append(input, dateInput, addButton);
     
-    // Секция фильтров
+    // === FILTERS SECTION ===
     const filtersSection = document.createElement('section');
     filtersSection.className = 'filters';
     filtersSection.style.display = 'flex';
@@ -83,7 +87,7 @@ function initApp() {
     filtersSection.style.justifyContent = 'space-between';
     filtersSection.style.alignItems = 'center';
     
-    // Группа кнопок фильтрации
+    // Группа фильтров
     const filterGroup = document.createElement('div');
     filterGroup.className = 'filter-group';
     filterGroup.style.display = 'flex';
@@ -123,6 +127,7 @@ function initApp() {
     completedBtn.style.borderRadius = '20px';
     completedBtn.style.cursor = 'pointer';
     
+    // append для filterGroup
     filterGroup.append(allBtn, activeBtn, completedBtn);
     
     // Поле поиска
@@ -138,9 +143,10 @@ function initApp() {
     searchInput.style.borderRadius = '20px';
     searchInput.style.fontSize = '14px';
     
+    // append для filtersSection
     filtersSection.append(filterGroup, searchInput);
     
-    // Секция списка задач
+    // === TASKS SECTION ===
     const tasksSection = document.createElement('section');
     tasksSection.className = 'tasks';
     
@@ -151,13 +157,19 @@ function initApp() {
     tasksList.style.padding = '0';
     tasksList.style.margin = '0';
     
+    // appendChild для tasksSection
     tasksSection.appendChild(tasksList);
     
-    // Собираем всю структуру
+    // === СБОРКА СТРУКТУРЫ ===
+    // Метод append для добавления нескольких элементов в container
     container.append(header, form, filtersSection, tasksSection);
+    
+    // appendChild для main
     main.appendChild(container);
+    
+    // appendChild для body
     document.body.appendChild(main);
     
-    // Устанавливаем сегодняшнюю дату по умолчанию
+    // Устанавливаем сегодняшнюю дату
     dateInput.value = new Date().toISOString().split('T')[0];
 }
