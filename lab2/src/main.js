@@ -432,16 +432,13 @@ class TodoUI {
     }
 
     saveNewOrder() {
-        // Получаем текущий порядок элементов в DOM
         const items = [...this.tasksList.querySelectorAll('.todo-item')];
         
-        // Создаем новый массив задач в порядке DOM
         const newOrder = items.map(item => {
             const taskId = parseInt(item.dataset.id);
             return this.taskManager.tasks.find(t => t.id === taskId);
         }).filter(task => task !== undefined);
         
-        // Сохраняем новый порядок
         this.taskManager.reorderTasks(newOrder);
     }
 }
