@@ -257,10 +257,7 @@ class TodoUI {
         deleteBtn.className = 'delete-btn';
         deleteBtn.textContent = '×';
         
-        editBtn.addEventListener('click', () => {
-            this.editTask(task);
-        });
-        
+        editBtn.addEventListener('click', () => this.editTask(task));
         deleteBtn.addEventListener('click', () => {
             this.taskManager.deleteTask(task.id);
             this.render();
