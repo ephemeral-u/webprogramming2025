@@ -1,80 +1,113 @@
 document.addEventListener('DOMContentLoaded', () => {
     createAppStructure();
+    
+    window.taskManager = new TaskManager();
 });
 
 function createAppStructure() {
-    const main = document.createElement('main');
-    const container = document.createElement('div');
-    container.className = 'container';
+}
+
+class TaskManager {
+    constructor() {
+        this.tasks = [];
+        this.loadTasks();
+    }
     
-    const header = document.createElement('header');
-    const h1 = document.createElement('h1');
-    h1.textContent = 'Todo List';
-    header.appendChild(h1);
+    loadTasks() {
+        const savedTasks = localStorage.getItem('tasks');
+        if (savedTasks) {
+            this.tasks = JSON.parse(savedTasks);
+        } else {
+            this.tasks = [
+                {
+                    id: Date.now() - 1000000,
+                    title: 'Изучить DOM API',
+                    date: new Date().toISOString().split('T')[0],
+                    completed: false
+                },
+                {
+                    id: Date.now() - 2000000,
+                    title: 'Сдать лабораторную работу',
+                    date: new Date().toISOString().split('T')[0],
+                    completed: true
+                },
+                {
+                    id: Date.now() - 3000000,
+                    title: 'Посмотреть лекцию по JavaScript',
+                    date: new Date().toISOString().split('T')[0],
+                    completed: false
+                }
+            ];
+            this.saveTasks();
+        }
+    }
     
-    const form = document.createElement('form');
-    form.id = 'todo-form';
-    form.className = 'todo-form';
+    saveTasks() {
+        localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    }
     
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.id = 'todo-input';
-    input.placeholder = 'Новая задача...';
-    input.required = true;
+    addTask(title, date) {
+        const newTask = {
+            id: Date.now(),
+            title: title,
+            date: date || new Date().toISOString().split('T')[0],
+            completed: false
+        };
+        this.tasks.push(newTask);
+        this.saveTasks();
+        return newTask;
+    }
     
-    const dateInput = document.createElement('input');
-    dateInput.type = 'date';
-    dateInput.id = 'todo-date';
+    deleteTask(id) {
+        this.tasks = this.tasks.filter(task => task.id !== id);
+        this.saveTasks();
+    }
     
-    const addButton = document.createElement('button');
-    addButton.type = 'submit';
-    addButton.textContent = 'Добавить';
+    updateTask(id, updates) {
+        const taskIndex = this.tasks.findIndex(task => task.id === id);
+        if (taskIndex !== -1) {
+            this.tasks[taskIndex] = { ...this.tasks[taskIndex], ...updates };
+            this.saveTasks();
+        }
+    }
     
-    form.append(input, dateInput, addButton);
+    toggleTask(id) {
+        const task = this.tasks.find(task => task.id === id);
+        if (task) {
+            task.completed = !task.completed;
+            this.saveTasks();
+        }
+    }
+
+    getFilteredTasks(filter, searchQuery = '') {
+        let filtered = [...this.tasks];
+        
+        if (filter === 'active') {
+            filtered = filtered.filter(task => !task.completed);
+        } else if (filter === 'completed') {
+            filtered = filtered.filter(task => task.completed);
+        }
+        
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(task => 
+                task.title.toLowerCase().includes(query)
+            );
+        }
+        
+        return filtered;
+    }
     
-    const filtersSection = document.createElement('section');
-    filtersSection.className = 'filters';
+    sortTasksByDate(tasks, ascending = true) {
+        return tasks.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return ascending ? dateA - dateB : dateB - dateA;
+        });
+    }
     
-    const filterGroup = document.createElement('div');
-    filterGroup.className = 'filter-group';
-    
-    const allBtn = document.createElement('button');
-    allBtn.className = 'filter-btn active';
-    allBtn.dataset.filter = 'all';
-    allBtn.textContent = 'Все';
-    
-    const activeBtn = document.createElement('button');
-    activeBtn.className = 'filter-btn';
-    activeBtn.dataset.filter = 'active';
-    activeBtn.textContent = 'Активные';
-    
-    const completedBtn = document.createElement('button');
-    completedBtn.className = 'filter-btn';
-    completedBtn.dataset.filter = 'completed';
-    completedBtn.textContent = 'Выполненные';
-    
-    filterGroup.append(allBtn, activeBtn, completedBtn);
-    
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.id = 'search-input';
-    searchInput.className = 'search-input';
-    searchInput.placeholder = 'Поиск задач...';
-    
-    filtersSection.append(filterGroup, searchInput);
-    
-    const tasksSection = document.createElement('section');
-    tasksSection.className = 'tasks';
-    
-    const tasksList = document.createElement('ul');
-    tasksList.id = 'tasks-list';
-    tasksList.className = 'tasks-list';
-    
-    tasksSection.appendChild(tasksList);
-    
-    container.append(header, form, filtersSection, tasksSection);
-    main.appendChild(container);
-    document.body.appendChild(main);
-    
-    dateInput.value = new Date().toISOString().split('T')[0];
+    reorderTasks(newOrder) {
+        this.tasks = newOrder;
+        this.saveTasks();
+    }
 }
