@@ -217,6 +217,56 @@ class TodoUI {
             }
         });
     }
+
+    createTaskElement(task) {
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+        li.dataset.id = task.id;
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'todo-checkbox';
+        checkbox.checked = task.completed;
+        
+        checkbox.addEventListener('change', () => {
+            this.taskManager.toggleTask(task.id);
+            this.render();
+        });
+        
+        const content = document.createElement('div');
+        content.className = 'todo-content';
+        
+        const title = document.createElement('span');
+        title.className = `todo-title ${task.completed ? 'completed' : ''}`;
+        title.textContent = task.title;
+        
+        const date = document.createElement('span');
+        date.className = 'todo-date';
+        date.textContent = new Date(task.date).toLocaleDateString('ru-RU');
+        
+        content.append(title, date);
+        
+        const actions = document.createElement('div');
+        actions.className = 'todo-actions';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-btn';
+        editBtn.textContent = '✎';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = '×';
+        
+        deleteBtn.addEventListener('click', () => {
+            this.taskManager.deleteTask(task.id);
+            this.render();
+        });
+        
+        actions.append(editBtn, deleteBtn);
+        li.append(checkbox, content, actions);
+        
+        return li;
+    }
     
     createTaskElement(task) {
         const li = document.createElement('li');
