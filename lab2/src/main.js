@@ -58,6 +58,32 @@ function createAppStructure() {
     completedBtn.textContent = 'Выполненные';
     
     filterGroup.append(allBtn, activeBtn, completedBtn);
+
+    const sortGroup = document.createElement('div');
+    sortGroup.className = 'sort-group';
+    
+    const sortLabel = document.createElement('label');
+    sortLabel.htmlFor = 'sort-select';
+    sortLabel.textContent = 'Сортировать по дате:';
+    sortLabel.style.marginRight = '8px';
+    
+    const sortSelect = document.createElement('select');
+    sortSelect.id = 'sort-select';
+    sortSelect.className = 'sort-select';
+    sortSelect.style.padding = '8px';
+    sortSelect.style.borderRadius = '4px';
+    sortSelect.style.border = '2px solid #e0e0e0';
+    
+    const optionAsc = document.createElement('option');
+    optionAsc.value = 'asc';
+    optionAsc.textContent = 'Сначала старые';
+    
+    const optionDesc = document.createElement('option');
+    optionDesc.value = 'desc';
+    optionDesc.textContent = 'Сначала новые';
+    
+    sortSelect.append(optionAsc, optionDesc);
+    sortGroup.append(sortLabel, sortSelect);
     
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
@@ -186,6 +212,14 @@ class TaskManager {
         this.tasks = newOrder;
         this.saveTasks();
     }
+
+    sortTasksByDate(tasks, ascending = true) {
+        return tasks.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return ascending ? dateA - dateB : dateB - dateA;
+        });
+    }
 }
 
 class TodoUI {
@@ -193,29 +227,51 @@ class TodoUI {
         this.taskManager = taskManager;
         this.currentFilter = 'all';
         this.searchQuery = '';
+        this.sortOrder = 'asc';
         this.tasksList = document.getElementById('tasks-list');
         this.form = document.getElementById('todo-form');
         this.input = document.getElementById('todo-input');
         this.dateInput = document.getElementById('todo-date');
+        this.sortSelect = document.getElementById('sort-select');
         
         this.addEventListeners();
-        
         this.render();
     }
     
     addEventListeners() {
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
-            
             const title = this.input.value.trim();
             if (title) {
                 this.taskManager.addTask(title, this.dateInput.value);
-                
                 this.input.value = '';
-                
                 this.render();
             }
         });
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => 
+                    b.classList.remove('active')
+                );
+                e.target.classList.add('active');
+                this.currentFilter = e.target.dataset.filter;
+                this.render();
+            });
+        });
+        
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            this.searchQuery = e.target.value;
+            this.render();
+        });
+        
+        if (this.sortSelect) {
+            this.sortSelect.addEventListener('change', (e) => {
+                this.sortOrder = e.target.value;
+                this.render();
+            });
+        }
     }
     
     createTaskElement(task) {
@@ -291,13 +347,12 @@ class TodoUI {
     }
     
     render() {
-
         let tasks = this.taskManager.getFilteredTasks(
             this.currentFilter, 
             this.searchQuery
         );
         
-        tasks = this.taskManager.sortTasksByDate(tasks, true);
+        tasks = this.taskManager.sortTasksByDate(tasks, this.sortOrder === 'asc');
         
         this.tasksList.innerHTML = '';
         
