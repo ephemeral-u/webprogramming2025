@@ -48,7 +48,7 @@ function renderCards() {
         });
         
         card.querySelector('.refresh-card').addEventListener('click', () => {
-            console.log('Обновить город:', city.name);
+            loadWeather(city.id);
         });
         
         cardsContainer.appendChild(card);
