@@ -174,3 +174,20 @@ header h1 {
 .card.loading .card-footer {
     display: none;
 }
+.weather-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 16px;
+    margin-bottom: 8px;
+}
+.weather-item span:first-child {
+    color: #475569;
+    font-weight: 500;
+}
+.weather-item span:last-child {
+    color: #0f172a;
+    font-weight: 600;
+}
