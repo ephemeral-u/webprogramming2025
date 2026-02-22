@@ -185,4 +185,13 @@ function displayWeatherOnCard(card, data) {
         });
     }
 }
+function saveToLocalStorage() {
+    const citiesForStorage = cities.map(city => ({
+        id: city.id,
+        name: city.name,
+        coords: city.coords,
+        weatherData: city.weatherData
+    }));
+    localStorage.setItem('weatherCities', JSON.stringify(citiesForStorage));
+}
 getLocation();
