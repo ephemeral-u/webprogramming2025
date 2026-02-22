@@ -1,4 +1,4 @@
-const cities = [];
+let cities = [];
 const API_KEY = 'e20e6bb8-7b4e-410a-bc89-12cc1104ab4a'; 
 const GEO_KEY = '1dd631c0-a5f8-426e-bc6b-3642ab2e885d';  
 const template = document.querySelector('.card-template');
