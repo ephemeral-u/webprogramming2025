@@ -23,6 +23,7 @@ document.querySelector('.save').addEventListener('click', async () => {
     cities.push({id: newId, name: city, weatherData: null});
     renderCards();
     await loadWeather(newId); 
+    saveToLocalStorage();
     document.querySelector('.modal').classList.remove('show');
     document.querySelector('.city-input').value = '';
 });
@@ -45,6 +46,7 @@ function renderCards() {
         card.querySelector('.delete').addEventListener('click', () => {
             cities = cities.filter(c => c.id !== city.id);
             renderCards();
+            saveToLocalStorage();
         });
         
         card.querySelector('.refresh-card').addEventListener('click', () => {
@@ -69,6 +71,7 @@ function getLocation() {
                 });
                 renderCards();
                 loadWeather('geo');
+                saveToLocalStorage();
             },
             () => {
                 document.querySelector('.modal').classList.add('show');
@@ -125,6 +128,7 @@ async function loadWeather(cityId) {
         displayWeatherOnCard(card, data);
         card.querySelector('.update-time').textContent = `обновлено: ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
         city.weatherData = data;
+        saveToLocalStorage();
     } catch (error) {
         console.error(error);
         card.querySelector('.card-error').textContent = error.message;
@@ -194,4 +198,20 @@ function saveToLocalStorage() {
     }));
     localStorage.setItem('weatherCities', JSON.stringify(citiesForStorage));
 }
-getLocation();
+function loadFromLocalStorage() {
+    const saved = localStorage.getItem('weatherCities');
+    if (saved) {
+        cities = JSON.parse(saved);
+        renderCards();
+        cities.forEach(city => {
+            if (city.id !== 'geo' || !city.coords) {
+                loadWeather(city.id);
+            } else {
+                loadWeather(city.id);
+            }
+        });
+    } else {
+        getLocation();
+    }
+}
+loadFromLocalStorage();
