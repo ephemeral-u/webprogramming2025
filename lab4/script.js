@@ -20,7 +20,7 @@ document.querySelector('.refresh-all').addEventListener('click', () => {
 document.querySelector('.save').addEventListener('click', async () => {
     const city = document.querySelector('.city-input').value.trim();
     const newId = Date.now().toString();  
-    cities.push({id: newId, name: city});
+    cities.push({id: newId, name: city, weatherData: null});
     renderCards();
     await loadWeather(newId); 
     document.querySelector('.modal').classList.remove('show');
@@ -34,7 +34,10 @@ function renderCards() {
         const card = template.content.cloneNode(true).querySelector('.card');
         card.dataset.id = city.id;
         card.querySelector('.city-name').textContent = city.name;
-        
+        if (city.weatherData) {
+            displayWeatherOnCard(card, city.weatherData);
+            card.querySelector('.update-time').textContent = `обновлено: ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+        }
         if (city.id === 'geo') {
             card.querySelector('.delete').style.display = 'none';
         }
@@ -119,34 +122,9 @@ async function loadWeather(cityId) {
         
         const data = await response.json();
         
-        const weatherList = card.querySelector('.weather-list');
-        weatherList.innerHTML = '';
-        const fact = data.fact;
-        const todayItem = document.createElement('div');
-        todayItem.className = 'weather-item';
-        todayItem.innerHTML = `
-            <span>Сегодня</span>
-            <span>${fact.temp}°C</span>
-            <span>${translateCondition(fact.condition)}</span>
-        `;
-        weatherList.appendChild(todayItem);
-        if (data.forecasts && data.forecasts.length > 1) {
-            data.forecasts.slice(1, 3).forEach((day, index) => {
-                const dayName = index === 0 ? 'Завтра' : new Date(day.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-                const dayPart = day.parts.day_short || day.parts.day;
-                
-                const item = document.createElement('div');
-                item.className = 'weather-item';
-                item.innerHTML = `
-                    <span>${dayName}</span>
-                    <span>${dayPart.temp}°C</span>
-                    <span>${translateCondition(dayPart.condition)}</span>
-                `;
-                weatherList.appendChild(item);
-            });
-        }
+        displayWeatherOnCard(card, data);
         card.querySelector('.update-time').textContent = `обновлено: ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
-        
+        city.weatherData = data;
     } catch (error) {
         console.error(error);
         card.querySelector('.card-error').textContent = error.message;
@@ -177,5 +155,34 @@ function translateCondition(code) {
     };
     return conditions[code] || code;
 }
-
+function displayWeatherOnCard(card, data) {
+    const weatherList = card.querySelector('.weather-list');
+    weatherList.innerHTML = '';
+    
+    const fact = data.fact;
+    const todayItem = document.createElement('div');
+    todayItem.className = 'weather-item';
+    todayItem.innerHTML = `
+        <span>Сегодня</span>
+        <span>${fact.temp}°C</span>
+        <span>${translateCondition(fact.condition)}</span>
+    `;
+    weatherList.appendChild(todayItem);
+    
+    if (data.forecasts && data.forecasts.length > 1) {
+        data.forecasts.slice(1, 3).forEach((day, index) => {
+            const dayName = index === 0 ? 'Завтра' : new Date(day.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+            const dayPart = day.parts.day_short || day.parts.day;
+            
+            const item = document.createElement('div');
+            item.className = 'weather-item';
+            item.innerHTML = `
+                <span>${dayName}</span>
+                <span>${dayPart.temp}°C</span>
+                <span>${translateCondition(dayPart.condition)}</span>
+            `;
+            weatherList.appendChild(item);
+        });
+    }
+}
 getLocation();
