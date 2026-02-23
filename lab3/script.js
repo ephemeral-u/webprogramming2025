@@ -166,6 +166,29 @@ function addNewTile() {
     }
 }
 
+function isGameOver() {
+    for(let i = 0; i < 4; i++) {
+        for(let j = 0; j < 4; j++) {
+            if(board[i][j] === 0) {
+                return false;
+            }
+        }
+    }
+    
+    for(let i = 0; i < 4; i++) {
+        for(let j = 0; j < 4; j++) {
+            if(j < 3 && board[i][j] === board[i][j + 1]) {
+                return false;
+            }
+            if(i < 3 && board[i][j] === board[i + 1][j]) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
 renderBoard();
 
 document.addEventListener('keydown', (e) => {
@@ -184,5 +207,8 @@ document.addEventListener('keydown', (e) => {
     if(e.key === 'ArrowLeft') {
         e.preventDefault();
         moveLeft();
+    }
+    if(isGameOver()) {
+        console.log('Game Over');
     }
 });
