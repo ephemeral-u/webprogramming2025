@@ -1,5 +1,6 @@
 const grid = document.getElementById('grid');
 const modal = document.getElementById('gameOverModal');
+const restartButton = document.getElementById('restartButton');
 let board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -190,6 +191,30 @@ function isGameOver() {
     return true;
 }
 
+function restartGame() {
+    board = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ];
+    
+    const tilesCount = Math.floor(Math.random() * 3) + 1;
+    for(let n = 0; n < tilesCount; n++) {
+        let placed = false;
+        while(!placed) {
+            const i = Math.floor(Math.random() * 4);
+            const j = Math.floor(Math.random() * 4);
+            if(board[i][j] === 0) {
+                board[i][j] = Math.random() < 0.5 ? 2 : 4;
+                placed = true;
+            }
+        }
+    }
+    renderBoard();
+    modal.style.display = 'none';
+}
+
 renderBoard();
 
 document.addEventListener('keydown', (e) => {
@@ -213,3 +238,5 @@ document.addEventListener('keydown', (e) => {
         modal.style.display = 'flex';
     }
 });
+
+restartButton.addEventListener('click', restartGame);
