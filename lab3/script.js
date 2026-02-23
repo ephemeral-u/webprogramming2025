@@ -1,4 +1,5 @@
 const grid = document.getElementById('grid');
+const modal = document.getElementById('gameOverModal');
 let board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -209,6 +210,6 @@ document.addEventListener('keydown', (e) => {
         moveLeft();
     }
     if(isGameOver()) {
-        console.log('Game Over');
+        modal.style.display = 'flex';
     }
 });
