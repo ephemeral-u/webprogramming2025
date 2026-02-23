@@ -34,4 +34,39 @@ for(let n = 0; n < tilesCount; n++) {
     }
 }
 
+function moveUp() {
+    for(let col = 0; col < 4; col++) {
+        let column = [];
+        for(let row = 0; row < 4; row++) {
+            if(board[row][col] !== 0) {
+                column.push(board[row][col]);
+            }
+        }
+        
+        for(let i = 0; i < column.length - 1; i++) {
+            if(column[i] === column[i + 1]) {
+                column[i] *= 2;
+                column.splice(i + 1, 1);
+            }
+        }
+        
+        while(column.length < 4) {
+            column.push(0);
+        }
+        
+        for(let row = 0; row < 4; row++) {
+            board[row][col] = column[row];
+        }
+    }
+    
+    renderBoard();
+}
+
 renderBoard();
+
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowUp') {
+        e.preventDefault();
+        moveUp();
+    }
+});
