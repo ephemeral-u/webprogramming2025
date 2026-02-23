@@ -47,3 +47,7 @@ body {
     border: 1px solid black;
     font-size: 24px;
 }
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
