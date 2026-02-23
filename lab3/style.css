@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+.game {
+    background: white;
+    padding: 10px;
+    width: 400px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+.grid {
+    background: #333;
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 100%;
+    aspect-ratio: 1;
+}
+.cell {
+    width: calc((100% - 15px) / 4);
+    height: calc((100% - 15px) / 4);
+    background: #B0E0E6;
+}
