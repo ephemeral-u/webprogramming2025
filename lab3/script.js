@@ -116,6 +116,33 @@ function moveRight() {
     renderBoard();
 }
 
+function moveLeft() {
+    for(let row = 0; row < 4; row++) {
+        let line = [];
+        for(let col = 0; col < 4; col++) {
+            if(board[row][col] !== 0) {
+                line.push(board[row][col]);
+            }
+        }
+        
+        for(let i = 0; i < line.length - 1; i++) {
+            if(line[i] === line[i + 1]) {
+                line[i] *= 2;
+                line.splice(i + 1, 1);
+            }
+        }
+        while(line.length < 4) {
+            line.push(0);
+        }
+        
+        for(let col = 0; col < 4; col++) {
+            board[row][col] = line[col];
+        }
+    }
+    
+    renderBoard();
+}
+
 renderBoard();
 
 document.addEventListener('keydown', (e) => {
@@ -130,5 +157,9 @@ document.addEventListener('keydown', (e) => {
     if(e.key === 'ArrowRight') {
         e.preventDefault();
         moveRight();
+    }
+    if(e.key === 'ArrowLeft') {
+        e.preventDefault();
+        moveLeft();
     }
 });
