@@ -89,6 +89,33 @@ function moveDown() {
     renderBoard();
 }
 
+function moveRight() {
+    for(let row = 0; row < 4; row++) {
+        let line = [];
+        for(let col = 3; col >= 0; col--) {
+            if(board[row][col] !== 0) {
+                line.push(board[row][col]);
+            }
+        }
+        
+        for(let i = 0; i < line.length - 1; i++) {
+            if(line[i] === line[i + 1]) {
+                line[i] *= 2;
+                line.splice(i + 1, 1);
+            }
+        }
+        while(line.length < 4) {
+            line.push(0);
+        }
+        
+        for(let col = 3; col >= 0; col--) {
+            board[row][col] = line[3 - col];
+        }
+    }
+    
+    renderBoard();
+}
+
 renderBoard();
 
 document.addEventListener('keydown', (e) => {
@@ -99,5 +126,9 @@ document.addEventListener('keydown', (e) => {
     if(e.key === 'ArrowDown') {
         e.preventDefault();
         moveDown();
+    }
+    if(e.key === 'ArrowRight') {
+        e.preventDefault();
+        moveRight();
     }
 });
