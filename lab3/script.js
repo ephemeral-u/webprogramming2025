@@ -6,6 +6,10 @@ const playerName = document.getElementById('playerName');
 const gameOverMessage = document.getElementById('gameOverMessage');
 const scoreElement = document.querySelector('.score');
 const undoBtn = document.getElementById('undoBtn');
+const leaderboardModal = document.getElementById('leaderboardModal');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
+const leaderboardBody = document.getElementById('leaderboardBody');
 let board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -271,14 +275,53 @@ document.addEventListener('keydown', (e) => {
         modal.style.display = 'flex';
     }
 });
+function addToLeaderboard(name, score) {
+    const leaderboard = loadLeaderboard();
+    const date = new Date().toLocaleDateString();
+    leaderboard.push({ name, score, date });
+    leaderboard.sort((a, b) => b.score - a.score);
+    saveLeaderboard(leaderboard);
+}
+
+function displayLeaderboard() {
+    const leaderboard = loadLeaderboard();
+    leaderboardBody.innerHTML = '';
+    
+    leaderboard.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${entry.name}</td>
+            <td>${entry.score}</td>
+            <td>${entry.date}</td>
+        `;
+        leaderboardBody.appendChild(row);
+    });
+}
+function saveLeaderboard(leaderboard) {
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+}
+function loadLeaderboard() {
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    return leaderboard;
+}
 
 restartButton.addEventListener('click', restartGame);
 undoBtn.addEventListener('click', undo);
 
 saveScoreBtn.addEventListener('click', () => {
     if(playerName.value.trim() !== '') {
+        addToLeaderboard(playerName.value.trim(), score);
         gameOverMessage.textContent = 'Ваш рекорд сохранен';
         playerName.style.display = 'none';
         saveScoreBtn.style.display = 'none';
     }
+});
+
+leaderboardBtn.addEventListener('click', () => {
+    displayLeaderboard();
+    leaderboardModal.style.display = 'flex';
+});
+
+closeLeaderboardBtn.addEventListener('click', () => {
+    leaderboardModal.style.display = 'none';
 });

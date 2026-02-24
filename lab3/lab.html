@@ -10,6 +10,7 @@
         <div class="header">
             <h1>2048</h1>
             <button id="undoBtn">Назад</button>
+            <button id="leaderboardBtn">Лидерборд</button>
 	    <div class="score">0</div>
         </div>
         <div class="grid" id="grid"></div>
@@ -20,6 +21,22 @@
             <input type="text" id="playerName" placeholder="Ваше имя" maxlength="20">
             <button id="saveScoreBtn">Сохранить результат</button>
             <button id="restartButton">Начать заново</button>
+        </div>
+    </div>
+    <div class="modal" id="leaderboardModal">
+        <div class="modal-content leaderboard-content">
+            <h2>Сохраненные рекорды</h2>
+            <table id="leaderboardTable">
+                <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Очки</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+            </table>
+            <button id="closeLeaderboardBtn">Закрыть</button>
         </div>
     </div>
     <script src="script.js"></script>
