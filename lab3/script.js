@@ -32,6 +32,7 @@ function renderBoard() {
             cell.className = 'cell';
             if(board[i][j] !== 0) {
                 cell.textContent = board[i][j];
+                cell.setAttribute('data-value', board[i][j]);
             }
             grid.appendChild(cell);
         }

@@ -41,7 +41,22 @@ button {
     width: calc((100% - 15px) / 4);
     height: calc((100% - 15px) / 4);
     background: #B0E0E6;
+    color: white;
+    text-align: center;
+    font-size: 30px;
 }
+.cell[data-value="2"] { background: #D8BFD8;}
+.cell[data-value="4"] { background: #DDA0DD;}
+.cell[data-value="8"] { background: #EE82EE;}
+.cell[data-value="16"] { background: #DA70D6;}
+.cell[data-value="32"] { background: #BA55D3;}
+.cell[data-value="64"] { background: #9932CC;}
+.cell[data-value="128"] { background: #8A2BE2;}
+.cell[data-value="256"] { background: #9400D3;}
+.cell[data-value="512"] { background: #8B008B;}
+.cell[data-value="1024"] { background: #4B0082;}
+.cell[data-value="2048"] { background: #483D8B;}
+
 .modal {
     display: none;
     position: fixed;
