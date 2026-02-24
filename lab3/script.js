@@ -2,6 +2,7 @@ const grid = document.getElementById('grid');
 const modal = document.getElementById('gameOverModal');
 const restartButton = document.getElementById('restartButton');
 const scoreElement = document.querySelector('.score');
+const undoBtn = document.getElementById('undoBtn');
 let board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -9,6 +10,8 @@ let board = [
     [0, 0, 0, 0]
 ];
 let score = 0;
+let previousBoard = null;
+let previousScore = 0;
 
 function renderBoard() {
     grid.innerHTML = '';
@@ -40,6 +43,7 @@ for(let n = 0; n < tilesCount; n++) {
 }
 
 function moveUp() {
+    savePreviousState();
     for(let col = 0; col < 4; col++) {
         let column = [];
         for(let row = 0; row < 4; row++) {
@@ -71,6 +75,7 @@ function moveUp() {
 }
 
 function moveDown() {
+    savePreviousState();
     for(let col = 0; col < 4; col++) {
         let column = [];
         for(let row = 3; row >= 0; row--) {
@@ -101,6 +106,7 @@ function moveDown() {
 }
 
 function moveRight() {
+    savePreviousState();
     for(let row = 0; row < 4; row++) {
         let line = [];
         for(let col = 3; col >= 0; col--) {
@@ -131,6 +137,7 @@ function moveRight() {
 }
 
 function moveLeft() {
+    savePreviousState();
     for(let row = 0; row < 4; row++) {
         let line = [];
         for(let col = 0; col < 4; col++) {
@@ -206,6 +213,8 @@ function restartGame() {
         [0, 0, 0, 0]
     ];
     score = 0;
+    previousBoard = null;
+    previousScore = 0;
     
     const tilesCount = Math.floor(Math.random() * 3) + 1;
     for(let n = 0; n < tilesCount; n++) {
@@ -221,6 +230,19 @@ function restartGame() {
     }
     renderBoard();
     modal.style.display = 'none';
+}
+
+function savePreviousState() {
+    previousBoard = JSON.parse(JSON.stringify(board));
+    previousScore = score;
+}
+
+function undo() {
+    if(previousBoard && !isGameOver()) {
+        board = JSON.parse(JSON.stringify(previousBoard));
+        score = previousScore;
+        renderBoard();
+    }
 }
 
 renderBoard();
@@ -248,3 +270,4 @@ document.addEventListener('keydown', (e) => {
 });
 
 restartButton.addEventListener('click', restartGame);
+undoBtn.addEventListener('click', undo);
