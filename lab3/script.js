@@ -1,6 +1,9 @@
 const grid = document.getElementById('grid');
 const modal = document.getElementById('gameOverModal');
 const restartButton = document.getElementById('restartButton');
+const saveScoreBtn = document.getElementById('saveScoreBtn');
+const playerName = document.getElementById('playerName');
+const gameOverMessage = document.getElementById('gameOverMessage');
 const scoreElement = document.querySelector('.score');
 const undoBtn = document.getElementById('undoBtn');
 let board = [
@@ -271,3 +274,11 @@ document.addEventListener('keydown', (e) => {
 
 restartButton.addEventListener('click', restartGame);
 undoBtn.addEventListener('click', undo);
+
+saveScoreBtn.addEventListener('click', () => {
+    if(playerName.value.trim() !== '') {
+        gameOverMessage.textContent = 'Ваш рекорд сохранен';
+        playerName.style.display = 'none';
+        saveScoreBtn.style.display = 'none';
+    }
+});
