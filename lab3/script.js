@@ -39,19 +39,7 @@ function renderBoard() {
     scoreElement.textContent = score;
 }
 
-const tilesCount = Math.floor(Math.random() * 3) + 1; // 1, 2 или 3
-
-for(let n = 0; n < tilesCount; n++) {
-    let placed = false;
-    while(!placed) {
-        const i = Math.floor(Math.random() * 4);
-        const j = Math.floor(Math.random() * 4);
-        if(board[i][j] === 0) {
-            board[i][j] = Math.random() < 0.5 ? 2 : 4;
-            placed = true;
-        }
-    }
-}
+loadGameState();
 
 function moveUp() {
     savePreviousState();
@@ -83,6 +71,7 @@ function moveUp() {
     renderBoard();
     addNewTile();
     renderBoard();
+    saveGameState();
 }
 
 function moveDown() {
@@ -114,6 +103,7 @@ function moveDown() {
     renderBoard();
     addNewTile();
     renderBoard();
+    saveGameState();
 }
 
 function moveRight() {
@@ -145,6 +135,7 @@ function moveRight() {
     renderBoard();
     addNewTile();
     renderBoard();
+    saveGameState();
 }
 
 function moveLeft() {
@@ -176,6 +167,7 @@ function moveLeft() {
     renderBoard();
     addNewTile();
     renderBoard();
+    saveGameState();
 }
 
 function addNewTile() {
@@ -240,6 +232,7 @@ function restartGame() {
         }
     }
     renderBoard();
+    saveGameState();
     modal.style.display = 'none';
 }
 
@@ -253,6 +246,7 @@ function undo() {
         board = JSON.parse(JSON.stringify(previousBoard));
         score = previousScore;
         renderBoard();
+        saveGameState();
     }
 }
 
@@ -309,6 +303,16 @@ function loadLeaderboard() {
     return leaderboard;
 }
 
+function saveGameState() {
+    const gameState = {
+        board: board,
+        score: score,
+        previousBoard: previousBoard,
+        previousScore: previousScore
+    };
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+}
+
 restartButton.addEventListener('click', restartGame);
 undoBtn.addEventListener('click', undo);
 
@@ -320,6 +324,32 @@ saveScoreBtn.addEventListener('click', () => {
         saveScoreBtn.style.display = 'none';
     }
 });
+function loadGameState() {
+    const savedState = localStorage.getItem('gameState');
+    if(savedState) {
+        const gameState = JSON.parse(savedState);
+        board = gameState.board;
+        score = gameState.score;
+        previousBoard = gameState.previousBoard;
+        previousScore = gameState.previousScore;
+        renderBoard();
+    } else {
+        const tilesCount = Math.floor(Math.random() * 3) + 1;
+        for(let n = 0; n < tilesCount; n++) {
+            let placed = false;
+            while(!placed) {
+                const i = Math.floor(Math.random() * 4);
+                const j = Math.floor(Math.random() * 4);
+                if(board[i][j] === 0) {
+                    board[i][j] = Math.random() < 0.5 ? 2 : 4;
+                    placed = true;
+                }
+            }
+        }
+        renderBoard();
+    }
+}
+
 
 leaderboardBtn.addEventListener('click', () => {
     displayLeaderboard();
