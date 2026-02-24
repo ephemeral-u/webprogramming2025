@@ -27,23 +27,26 @@ button {
 .grid {
     background: #333;
     padding: 5px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
+    display: block;
     width: 100%;
     aspect-ratio: 1;
+    position: relative;
 }
 .score {
     font-weight: bold;
     font-size: 24px;
 }
 .cell {
-    width: calc((100% - 15px) / 4);
-    height: calc((100% - 15px) / 4);
     background: #B0E0E6;
     color: white;
+    display: flex;
+    align-items: center;     
+    justify-content: center;  
     text-align: center;
     font-size: 30px;
+    transition: all 0.15s ease;
+    position: absolute;
+    box-sizing: border-box;
 }
 .cell[data-value="2"] { background: #D8BFD8;}
 .cell[data-value="4"] { background: #DDA0DD;}
@@ -106,6 +109,7 @@ button {
     text-align: center;
 }
 .mobile-controls {
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-top: 15px;

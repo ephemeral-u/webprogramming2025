@@ -26,18 +26,50 @@ let previousScore = 0;
 
 function renderBoard() {
     grid.innerHTML = '';
+    const gridWidth = grid.offsetWidth;
+    const size = (gridWidth - 10 - 15) / 4; // 10 = padding (5+5), 15 = gap (5*3)
+    
     for(let i = 0; i < 4; i++) {
         for(let j = 0; j < 4; j++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
+            cell.setAttribute('data-row', i);
+            cell.setAttribute('data-col', j);
+            
+            cell.style.width = size + 'px';
+            cell.style.height = size + 'px';
+            cell.style.transform = `translate(${5 + j * (size + 5)}px, ${5 + i * (size + 5)}px)`;
+            
             if(board[i][j] !== 0) {
                 cell.textContent = board[i][j];
                 cell.setAttribute('data-value', board[i][j]);
             }
+            
             grid.appendChild(cell);
         }
     }
     scoreElement.textContent = score;
+}
+
+
+function updatePositions() {
+    const cells = document.querySelectorAll('.cell');
+    const gridWidth = grid.offsetWidth;
+    const size = (gridWidth - 10 - 15) / 4;
+    
+    cells.forEach(cell => {
+        const row = parseInt(cell.getAttribute('data-row'));
+        const col = parseInt(cell.getAttribute('data-col'));
+        cell.style.transform = `translate(${5 + col * (size + 5)}px, ${5 + row * (size + 5)}px)`;
+        
+        if(board[row][col] !== 0) {
+            cell.textContent = board[row][col];
+            cell.setAttribute('data-value', board[row][col]);
+        } else {
+            cell.textContent = '';
+            cell.removeAttribute('data-value');
+        }
+    });
 }
 
 loadGameState();
@@ -69,9 +101,9 @@ function moveUp() {
         }
     }
     
-    renderBoard();
+    updatePositions();
     addNewTile();
-    renderBoard();
+    updatePositions();
     saveGameState();
 }
 
@@ -101,9 +133,9 @@ function moveDown() {
         }
     }
     
-    renderBoard();
+    updatePositions();
     addNewTile();
-    renderBoard();
+    updatePositions();
     saveGameState();
 }
 
@@ -133,9 +165,9 @@ function moveRight() {
         }
     }
     
-    renderBoard();
+    updatePositions();
     addNewTile();
-    renderBoard();
+    updatePositions();
     saveGameState();
 }
 
@@ -165,9 +197,9 @@ function moveLeft() {
         }
     }
     
-    renderBoard();
+    updatePositions();
     addNewTile();
-    renderBoard();
+    updatePositions();
     saveGameState();
 }
 
@@ -375,4 +407,11 @@ mobileLeft.addEventListener('click', () => {
 
 mobileRight.addEventListener('click', () => {
     moveRight();
+});
+window.addEventListener('load', () => {
+    renderBoard();
+});
+
+window.addEventListener('resize', () => {
+    renderBoard();
 });
