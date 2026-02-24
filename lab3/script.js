@@ -1,12 +1,14 @@
 const grid = document.getElementById('grid');
 const modal = document.getElementById('gameOverModal');
 const restartButton = document.getElementById('restartButton');
+const scoreElement = document.querySelector('.score');
 let board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0]
 ];
+let score = 0;
 
 function renderBoard() {
     grid.innerHTML = '';
@@ -20,6 +22,7 @@ function renderBoard() {
             grid.appendChild(cell);
         }
     }
+    scoreElement.textContent = score;
 }
 
 const tilesCount = Math.floor(Math.random() * 3) + 1; // 1, 2 или 3
@@ -48,6 +51,7 @@ function moveUp() {
         for(let i = 0; i < column.length - 1; i++) {
             if(column[i] === column[i + 1]) {
                 column[i] *= 2;
+                score += column[i];
                 column.splice(i + 1, 1);
             }
         }
@@ -78,6 +82,7 @@ function moveDown() {
         for(let i = 0; i < column.length - 1; i++) {
             if(column[i] === column[i + 1]) {
                 column[i] *= 2;
+                score += column[i];
                 column.splice(i + 1, 1);
             }
         }
@@ -107,6 +112,7 @@ function moveRight() {
         for(let i = 0; i < line.length - 1; i++) {
             if(line[i] === line[i + 1]) {
                 line[i] *= 2;
+                score += line[i];
                 line.splice(i + 1, 1);
             }
         }
@@ -136,6 +142,7 @@ function moveLeft() {
         for(let i = 0; i < line.length - 1; i++) {
             if(line[i] === line[i + 1]) {
                 line[i] *= 2;
+                score += line[i];
                 line.splice(i + 1, 1);
             }
         }
@@ -198,6 +205,7 @@ function restartGame() {
         [0, 0, 0, 0],
         [0, 0, 0, 0]
     ];
+    score = 0;
     
     const tilesCount = Math.floor(Math.random() * 3) + 1;
     for(let n = 0; n < tilesCount; n++) {
