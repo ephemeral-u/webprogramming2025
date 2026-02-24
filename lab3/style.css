@@ -90,3 +90,17 @@ button {
     border: 1px solid black;
     text-align: center;
 }
+.mobile-controls {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+.mobile-btn {
+    padding: 15px;
+    font-size: 24px;
+    background: #f0f0f0;
+}
+.mobile-btn:nth-child(1) { grid-column: 2; }  /* Up */
+.mobile-btn:nth-child(2) { grid-column: 1; grid-row: 2; }  /* Left */
+.mobile-btn:nth-child(3) { grid-column: 2; grid-row: 2; }  /* Down */
+.mobile-btn:nth-child(4) { grid-column: 3; grid-row: 2; }  /* Right */

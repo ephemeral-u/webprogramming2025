@@ -10,6 +10,10 @@ const leaderboardModal = document.getElementById('leaderboardModal');
 const leaderboardBtn = document.getElementById('leaderboardBtn');
 const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
 const leaderboardBody = document.getElementById('leaderboardBody');
+const mobileUp = document.getElementById('mobileUp');
+const mobileDown = document.getElementById('mobileDown');
+const mobileLeft = document.getElementById('mobileLeft');
+const mobileRight = document.getElementById('mobileRight');
 let board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -324,4 +328,20 @@ leaderboardBtn.addEventListener('click', () => {
 
 closeLeaderboardBtn.addEventListener('click', () => {
     leaderboardModal.style.display = 'none';
+});
+
+mobileUp.addEventListener('click', () => {
+    moveUp();
+});
+
+mobileDown.addEventListener('click', () => {
+    moveDown();
+});
+
+mobileLeft.addEventListener('click', () => {
+    moveLeft();
+});
+
+mobileRight.addEventListener('click', () => {
+    moveRight();
 });
