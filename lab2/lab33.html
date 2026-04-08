@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - Игра</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #FFCBDB;
+            color: #f1f1f1;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .title-container {
+            flex: 1;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: #EB5284;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+	    text-align: center;	
+        }
+
+        .scores-container {
+            display: flex;
+            gap: 20px;
+	    justify-content: center; 
+        }
+
+        .score-box {
+            background: #FB607F;
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .game-info {
+            margin-bottom: 30px;
+        }
+	.controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #FB607F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .game-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .game-board {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 15px;
+            aspect-ratio: 1/1;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+	.modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+	.modal.hidden {
+            display: none;
+        }
+	
+	.modal-content {
+            background: #FFCBDB;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid #FB607F;
+        }
+
+	.modal-body {
+            padding: 30px;
+        }
+	.modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: #EB5284;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+	.close-btn {
+            background: none;
+            border: none;
+            color: #EB5284;
+            font-size: 2.5rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s ease;
+        }
+
+	.leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .leaderboard-table th {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            text-align: left;
+            color: #DE5D83;
+            font-weight: 500;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .scores-container {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .score-box {
+                min-width: 45%;
+                padding: 12px 15px;
+            }
+            
+            .title {
+                font-size: 2.8rem;
+            }
+            
+            .controls {
+                justify-content: space-between;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 2.3rem;
+            }
+            
+            .score {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .game-board {
+                gap: 10px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="title-container">
+                <h1 class="title">2048</h1>
+            </div>
+           
+        </header>
+	<div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">Счет</div>
+                    <div id="score" class="score">0</div>
+                </div>
+            </div>
+        <div class="game-info">
+            <div class="controls">
+                <button id="new-game" class="btn">
+                    Новая игра
+                </button>
+                <button id="undo" class="btn">
+                     Отменить ход
+                </button>
+                <button id="leaderboard-btn" class="btn">
+                     Таблица лидеров
+                </button>
+            </div>
+            
+        <main class="game-container">
+            <div class="game-wrapper">
+                <div id="game-board" class="game-board"></div>
+                <div id="game-over" class="game-over hidden">
+                    <h2>Игра окончена!</h2>
+                    <p id="final-score">Ваш счет: <span>0</span></p>
+                    <div id="save-score-container">
+                        <input type="text" id="player-name" placeholder="Введите ваше имя" maxlength="20">
+                        <button id="save-score" class="btn">Сохранить рекорд</button>
+                    </div>
+                    <div id="score-saved" class="hidden">
+                        <p><i class="fas fa-check-circle"></i> Ваш рекорд сохранен!</p>
+                    </div>
+                    <button id="restart-game" class="btn">
+                        <i class="fas fa-redo"></i> Начать заново
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <div id="leaderboard-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Таблица лидеров</h2>
+                <button id="close-modal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Место</th>
+                            <th>Имя</th>
+                            <th>Счет</th>
+                            <th>Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<script>
+	const GRID_SIZE = 4;
+	const EMPTY_CELL = 0;
+	const leaderboardModal = document.getElementById('leaderboard-modal');
+	const leaderboardBody = document.getElementById('leaderboard-body');
+	const leaderboardButton = document.getElementById('leaderboard-btn');
+	const closeModalButton = document.getElementById('close-modal');
+	const gameBoard = document.getElementById('game-board');
+	const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('game-over');
+        const finalScoreElement = document.getElementById('final-score');
+        const playerNameInput = document.getElementById('player-name');
+        const saveScoreButton = document.getElementById('save-score');
+        const saveScoreContainer = document.getElementById('save-score-container');
+        const scoreSavedElement = document.getElementById('score-saved');
+        const restartGameButton = document.getElementById('restart-game');
+        const newGameButton = document.getElementById('new-game');
+        const undoButton = document.getElementById('undo');
+	let grid = [];
+        let score = 0;
+        let gameOver = false;
+
+	leaderboardButton.addEventListener('click', () => {
+    		leaderboardModal.classList.remove('hidden');
+	});
+
+	closeModalButton.addEventListener('click', () => {
+    		leaderboardModal.classList.add('hidden');
+	});
+	function createEmptyGrid() {
+            gameBoard.innerHTML = '';
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    gameBoard.appendChild(cell);
+                }
+            }
+        }
+
+        function addRandomTile() {
+            const emptyCells = [];
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    if (grid[row][col] === EMPTY_CELL) {
+                        emptyCells.push({row, col});
+                    }
+                }
+            }
+            if (emptyCells.length > 0) {
+                const numTiles = Math.random() < 0.9 ? 1 : 2;
+                
+                for (let i = 0; i < Math.min(numTiles, emptyCells.length); i++) {
+                    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                    const {row, col} = emptyCells[randomIndex];
+                    grid[row][col] = Math.random() < 0.9 ? 2 : 4;
+                    emptyCells.splice(randomIndex, 1);
+                }
+                
+                return true;
+            }
+            
+            return false;
+        }
+	function initGame() {
+		grid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(EMPTY_CELL));
+	}
+	function updateGrid() {
+    		gameBoard.innerHTML = '';
+	}
+	function moveLeft() {
+            if (gameOver) return false;
+            
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                const rowValues = newGrid[row].filter(cell => cell !== EMPTY_CELL);
+                for (let i = 0; i < rowValues.length - 1; i++) {
+                    if (rowValues[i] === rowValues[i + 1]) {
+                        rowValues[i] *= 2;
+                        score += rowValues[i];
+                        rowValues.splice(i + 1, 1);
+                    }
+                }
+                while (rowValues.length < GRID_SIZE) {
+                    rowValues.push(EMPTY_CELL);
+                }
+                if (JSON.stringify(newGrid[row]) !== JSON.stringify(rowValues)) {
+                    moved = true;
+                }
+                
+                newGrid[row] = rowValues;
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+        function moveRight() {
+            if (gameOver) return false;
+            
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                const rowValues = newGrid[row].filter(cell => cell !== EMPTY_CELL);
+                for (let i = rowValues.length - 1; i > 0; i--) {
+                    if (rowValues[i] === rowValues[i - 1]) {
+                        rowValues[i] *= 2;
+                        score += rowValues[i];
+                        rowValues.splice(i - 1, 1);
+                        i--; 
+                    }
+                }
+                while (rowValues.length < GRID_SIZE) {
+                    rowValues.unshift(EMPTY_CELL);
+                }
+                if (JSON.stringify(newGrid[row]) !== JSON.stringify(rowValues)) {
+                    moved = true;
+                }
+                
+                newGrid[row] = rowValues;
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+        function moveUp() {
+            if (gameOver) return false;
+            
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            for (let col = 0; col < GRID_SIZE; col++) {
+                const colValues = [];
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    colValues.push(newGrid[row][col]);
+                }
+                const filteredValues = colValues.filter(cell => cell !== EMPTY_CELL);
+                for (let i = 0; i < filteredValues.length - 1; i++) {
+                    if (filteredValues[i] === filteredValues[i + 1]) {
+                        filteredValues[i] *= 2;
+                        score += filteredValues[i];
+                        filteredValues.splice(i + 1, 1);
+                    }
+                }
+                while (filteredValues.length < GRID_SIZE) {
+                    filteredValues.push(EMPTY_CELL);
+                }
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    if (newGrid[row][col] !== filteredValues[row]) {
+                        moved = true;
+                    }
+                    newGrid[row][col] = filteredValues[row];
+                }
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+        function moveDown() {
+            if (gameOver) return false;
+            let moved = false;
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            for (let col = 0; col < GRID_SIZE; col++) {
+                const colValues = [];
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    colValues.push(newGrid[row][col]);
+                }
+                const filteredValues = colValues.filter(cell => cell !== EMPTY_CELL);
+                for (let i = filteredValues.length - 1; i > 0; i--) {
+                    if (filteredValues[i] === filteredValues[i - 1]) {
+                        filteredValues[i] *= 2;
+                        score += filteredValues[i];
+                        filteredValues.splice(i - 1, 1);
+                        i--; 
+                    }
+                }
+                while (filteredValues.length < GRID_SIZE) {
+                    filteredValues.unshift(EMPTY_CELL);
+                }
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    if (newGrid[row][col] !== filteredValues[row]) {
+                        moved = true;
+                    }
+                    newGrid[row][col] = filteredValues[row];
+                }
+            }
+            
+            if (moved) {
+                saveHistory();
+                grid = newGrid;
+                addRandomTile();
+                updateGrid();
+            }
+            
+            return moved;
+        }
+	function updateScore() {
+    		scoreElement.textContent = score;
+   		 saveGameState();
+	}
+	function saveGameState() {
+    		const gameState = {
+        		grid: grid,
+        		score: score,
+       	 		history: history.slice(-5) 
+    		};
+    		localStorage.setItem('2048-game-state', JSON.stringify(gameState));
+	}
+	function updateGrid() {
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => tile.remove());
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    const value = grid[row][col];
+                    
+                    if (value !== EMPTY_CELL) {
+                        const tile = document.createElement('div');
+                        tile.classList.add('tile', `tile-${value}`);
+                        tile.textContent = value;
+                        tile.dataset.row = row;
+                        tile.dataset.col = col;
+                        const cellSize = (gameBoard.clientWidth - 75) / GRID_SIZE;
+                        const x = col * (cellSize + 15) + 15;
+                        const y = row * (cellSize + 15) + 15;
+                        tile.style.left = `${x}px`;
+                        tile.style.top = `${y}px`;
+                        gameBoard.appendChild(tile);
+                    }
+                }
+            }
+            updateScore();
+            checkGameState();
+        }
+	
+        function canMove() {
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    if (grid[row][col] === EMPTY_CELL) {
+                        return true;
+                    }
+                }
+            }
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE - 1; col++) {
+                    if (grid[row][col] === grid[row][col + 1]) {
+                        return true;
+                    }
+                }
+            }
+            for (let col = 0; col < GRID_SIZE; col++) {
+                for (let row = 0; row < GRID_SIZE - 1; row++) {
+                    if (grid[row][col] === grid[row + 1][col]) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        function checkGameState() {
+            if (!canMove()) {
+                gameOver = true;
+                showGameOver();
+            }
+        }
+        function showGameOver() {
+            finalScoreElement.innerHTML = `Ваш счет: <span>${score}</span>`;
+            saveScoreContainer.classList.remove('hidden');
+            scoreSavedElement.classList.add('hidden');
+            playerNameInput.value = '';
+            gameOverElement.classList.remove('hidden');
+            updateMobileControlsVisibility();
+        }
+        function hideGameOver() {
+            gameOverElement.classList.add('hidden');
+            updateMobileControlsVisibility();
+        }
+</script>
+</body>
+</html>
